@@ -1,0 +1,402 @@
+import tkinter as tk
+from tkinter import messagebox
+
+
+class Member:
+    def __init__(self, name, ID, PW, email):
+        self.name = name
+        self.ID = ID
+        self.PW = PW
+        self.email = email
+
+    def getName(self):
+        return self.name
+
+    def getID(self):
+        return self.ID
+
+    def getEmail(self):
+        return self.email
+
+    def getPW(self):
+        return self.PW
+
+    def setName(self, name):
+        self.name = name
+
+    def setID(self, ID):
+        self.ID = ID
+
+    def setEmail(self, email):
+        self.email = email
+
+    def setPW(self, PW):
+        self.PW = PW
+
+    def ageApproach(self, age):
+        self.age = age
+
+
+class Registration:
+    def __init__(self):
+        self.members = []
+
+    def Registration(self, name, ID, PW, email):
+        member = Member(name, ID, PW, email)    
+        self.members.append(member)
+
+    def HasID(self, ID):
+        for member in self.members:
+            if member.ID == ID:
+                return True
+        return False
+
+    def HasRegistration(self, name, email):
+        for member in self.members:
+            if member.name == name and member.email == email:
+                return True
+        return False
+
+    def addMember(self, name, ID, PW, email):
+        if not self.HasID(ID):
+            self.Registration(name, ID, PW, email)
+            print(f"회원 {name} 추가 완료")
+        else:
+            print("ID가 이미 존재합니다")
+
+
+class Login:
+    def __init__(self):
+        self.is_listener = False
+        self.is_artist = False
+        self.is_administrator = False
+
+    def logincheck(self, ID, PW, registration):
+        for member in registration.members:
+            if member.ID == ID and member.PW == PW:
+                return True
+        return False
+
+    def isListener(self):
+        return self.is_listener
+
+    def isArtist(self):
+        return self.is_artist
+
+    def isAdministrator(self):
+        return self.is_administrator
+
+
+class User:
+    def __init__(self, C_ID):
+        self.C_ID = C_ID
+        self.Registration_info = 0
+        self.Request_info = 0
+
+    def Registration(self):
+        pass
+
+    def Request(self):
+        pass
+
+    def Cancel_req(self):
+        pass
+
+
+class Management:
+    def __init__(self):
+        self.users = []
+
+    def deletion(self, userID):
+        self.users = [user for user in self.users if user.C_ID != userID]
+
+    def ShowUserlist(self):
+        for user in self.users:
+            print(user.C_ID)
+
+
+class Search_info:
+    def __init__(self, p_name, search_name):
+        self.p_name = p_name
+        self.search_name = search_name
+        self.no_result = False
+
+    def Search(self):
+        pass
+
+    def getName(self):
+        return self.search_name
+
+
+class Registering_info:
+    def __init__(self, Registration_info, F_ID):
+        self.Registration_info = Registration_info
+        self.F_ID = F_ID
+
+    def Show_registering_info(self):
+        pass
+
+
+class Request_info:
+    def __init__(self, Request_info, req_e_ID):
+        self.Request_info = Request_info
+        self.req_e_ID = req_e_ID
+
+    def Show_request_info(self):
+        pass
+
+
+class Application(tk.Tk):
+    def __init__(self, registration, login):
+        super().__init__()
+        self.registration = registration
+        self.login = login
+        self.title("AWL - Artist with Listener")
+        self.geometry("300x250")
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label_title = tk.Label(self, text="AWL", font=("Arial", 16), bg="lightgrey")
+        self.label_title.pack(fill=tk.X, pady=10)
+
+        self.label1 = tk.Label(self, text="ID")
+        self.label1.pack(pady=5)
+
+        self.entry_id = tk.Entry(self)
+        self.entry_id.pack(pady=5)
+
+        self.label2 = tk.Label(self, text="비밀번호")
+        self.label2.pack(pady=5)
+
+        self.entry_pw = tk.Entry(self, show="*")
+        self.entry_pw.pack(pady=5)
+
+        self.login_button = tk.Button(self, text="로그인", command=self.login_action)
+        self.login_button.pack(pady=5)
+
+        self.register_button = tk.Button(self, text="회원가입", command=self.register_action)
+        self.register_button.pack(pady=5)
+
+    def login_action(self):
+        user_id = self.entry_id.get()
+        user_pw = self.entry_pw.get()
+        if self.login.logincheck(user_id, user_pw, self.registration):
+            messagebox.showinfo("Login", "로그인 성공")
+            self.destroy()
+            SearchWindow(self.registration, user_id)
+        else:
+            messagebox.showerror("Login", "로그인 실패")
+
+    def register_action(self):
+        RegisterWindow(self, self.registration)
+
+
+class RegisterWindow(tk.Toplevel):
+    def __init__(self, parent, registration):
+        super().__init__(parent)
+        self.registration = registration
+        self.title("회원가입")
+        self.geometry("300x250")
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label1 = tk.Label(self, text="이름")
+        self.label1.pack(pady=5)
+        self.entry_name = tk.Entry(self)
+        self.entry_name.pack(pady=5)
+
+        self.label2 = tk.Label(self, text="ID")
+        self.label2.pack(pady=5)
+        self.entry_id = tk.Entry(self)
+        self.entry_id.pack(pady=5)
+
+        self.label3 = tk.Label(self, text="비밀번호")
+        self.label3.pack(pady=5)
+        self.entry_pw = tk.Entry(self, show="*")
+        self.entry_pw.pack(pady=5)
+
+        self.label4 = tk.Label(self, text="이메일")
+        self.label4.pack(pady=5)
+        self.entry_email = tk.Entry(self)
+        self.entry_email.pack(pady=5)
+
+        self.register_button = tk.Button(self, text="가입하기", command=self.register_action)
+        self.register_button.pack(pady=20)
+
+    def register_action(self):
+        name = self.entry_name.get()
+        ID = self.entry_id.get()
+        PW = self.entry_pw.get()
+        email = self.entry_email.get()
+        if not self.registration.HasID(ID):
+            self.registration.addMember(name, ID, PW, email)
+            messagebox.showinfo("회원가입", "회원가입 성공")
+            self.destroy()
+        else:
+            messagebox.showerror("회원가입", "ID가 이미 존재합니다")
+
+
+class SearchWindow(tk.Toplevel):
+    def __init__(self, registration, user_id):
+        super().__init__()
+        self.registration = registration
+        self.user_id = user_id
+        self.title("Search")
+        self.geometry("400x500")
+
+        self.information = {}
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.profile_button = tk.Button(self, text="Profile", command=self.profile_action)
+        self.profile_button.pack(anchor=tk.NE, padx=10, pady=10)
+
+        self.label_search = tk.Label(self, text="Search", font=("Arial", 16))
+        self.label_search.pack(pady=10)
+
+        self.entry_search = tk.Entry(self)
+        self.entry_search.pack(pady=10)
+
+        self.search_button = tk.Button(self, text="Search", command=self.search_action)
+        self.search_button.pack(pady=10)
+
+        self.register_info_button = tk.Button(self, text="정보 등록", command=self.register_info_action)
+        self.register_info_button.pack(pady=10)
+
+        self.results_frame = tk.Frame(self)
+        self.results_frame.pack(pady=20)
+
+    def profile_action(self):
+        ProfileWindow(self, self.user_id)
+
+    def search_action(self):
+        for widget in self.results_frame.winfo_children():
+            widget.destroy()
+
+        search_text = self.entry_search.get()
+        if search_text:
+            if search_text in self.information:
+                result = self.information[search_text]
+                result_label = tk.Label(self.results_frame, text=f"{search_text}: {result}")
+                result_label.pack(pady=5)
+
+                comment_button = tk.Button(self.results_frame, text="코멘트", command=lambda: self.comment_action(search_text))
+                comment_button.pack(pady=5)
+            else:
+                result_label = tk.Label(self.results_frame, text="검색 결과가 없습니다.")
+                result_label.pack(pady=5)
+
+    def comment_action(self, search_text):
+        CommentWindow(self, search_text)
+
+    def register_info_action(self):
+        RegisterInfoWindow(self)
+
+
+class ProfileWindow(tk.Toplevel):
+    def __init__(self, parent, user_id):
+        super().__init__(parent)
+        self.user_id = user_id
+        self.title("Profile")
+        self.geometry("300x150")
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label_id = tk.Label(self, text=f"ID: {self.user_id}")
+        self.label_id.pack(pady=10)
+
+        self.logout_button = tk.Button(self, text="로그아웃", command=self.logout_action)
+        self.logout_button.pack(pady=5)
+
+        self.exit_button = tk.Button(self, text="종료", command=self.exit_action)
+        self.exit_button.pack(pady=5)
+
+    def logout_action(self):
+        self.destroy()
+        app = Application(registration, login)
+        app.mainloop()
+
+    def exit_action(self):
+        self.quit()
+
+
+class RegisterInfoWindow(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent = parent
+        self.title("정보 등록")
+        self.geometry("300x200")
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label_key = tk.Label(self, text="키워드")
+        self.label_key.pack(pady=5)
+        self.entry_key = tk.Entry(self)
+        self.entry_key.pack(pady=5)
+
+        self.label_value = tk.Label(self, text="정보")
+        self.label_value.pack(pady=5)
+        self.entry_value = tk.Entry(self)
+        self.entry_value.pack(pady=5)
+
+        self.register_button = tk.Button(self, text="등록", command=self.register_info_action)
+        self.register_button.pack(pady=20)
+
+    def register_info_action(self):
+        key = self.entry_key.get()
+        value = self.entry_value.get()
+        if key and value:
+            self.parent.information[key] = value
+            messagebox.showinfo("정보 등록", "정보 등록 성공")
+            self.destroy()
+        else:
+            messagebox.showerror("정보 등록", "키워드와 정보를 모두 입력하세요")
+
+
+class CommentWindow(tk.Toplevel):
+    def __init__(self, parent, search_text):
+        super().__init__(parent)
+        self.search_text = search_text
+        self.comments = []
+        self.title(f"{search_text} 코멘트")
+        self.geometry("400x500")
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.label_comment = tk.Label(self, text="Comment", font=("Arial", 16))
+        self.label_comment.pack(pady=10)
+
+        self.comments_frame = tk.Frame(self)
+        self.comments_frame.pack(pady=20)
+
+        self.entry_comment = tk.Entry(self)
+        self.entry_comment.pack(pady=10)
+
+        self.comment_button = tk.Button(self, text="Comment", command=self.add_comment)
+        self.comment_button.pack(pady=10)
+
+    def add_comment(self):
+        comment_text = self.entry_comment.get()
+        if comment_text:
+            self.comments.append(comment_text)
+            self.entry_comment.delete(0, tk.END)
+            self.update_comments()
+
+    def update_comments(self):
+        for widget in self.comments_frame.winfo_children():
+            widget.destroy()
+
+        for comment in self.comments:
+            comment_label = tk.Label(self.comments_frame, text=comment, borderwidth=2, relief="groove")
+            comment_label.pack(pady=5, fill=tk.X)
+
+
+if __name__ == "__main__":
+    registration = Registration()
+    login = Login()
+    app = Application(registration, login)
+    app.mainloop()
